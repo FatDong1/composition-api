@@ -10,6 +10,7 @@ import { VueProxy } from './componentProxy'
 import { Data } from './common'
 import { HasDefined } from '../types/basic'
 import { EmitsOptions } from '../runtimeContext'
+import { InjectOptions as Vue2InjectOptions } from 'vue/types/options'
 
 /**
  * overload 1: object format with no props
@@ -21,7 +22,8 @@ export function defineComponent<
   M extends MethodOptions = {},
   Mixin = {},
   Extends = {},
-  Emits extends EmitsOptions = {}
+  Emits extends EmitsOptions = {},
+  injectOptions extends Vue2InjectOptions = {}
 >(
   options: ComponentOptionsWithoutProps<
     {},
@@ -31,7 +33,8 @@ export function defineComponent<
     M,
     Mixin,
     Extends,
-    Emits
+    Emits,
+    injectOptions
   >
 ): VueProxy<{}, RawBindings, D, C, M, Mixin, Extends, Emits>
 /**
@@ -49,7 +52,8 @@ export function defineComponent<
   Mixin = {},
   Extends = {},
   Emits extends EmitsOptions = {},
-  PropsOptions extends ComponentPropsOptions = ComponentPropsOptions
+  PropsOptions extends ComponentPropsOptions = ComponentPropsOptions,
+  injectOptions extends Vue2InjectOptions = {}
 >(
   options: ComponentOptionsWithArrayProps<
     PropNames,
@@ -59,7 +63,8 @@ export function defineComponent<
     M,
     Mixin,
     Extends,
-    Emits
+    Emits,
+    injectOptions
   >
 ): VueProxy<
   Readonly<{ [key in PropNames]?: any }>,
@@ -86,7 +91,8 @@ export function defineComponent<
   Mixin = {},
   Extends = {},
   Emits extends EmitsOptions = {},
-  PropsOptions extends ComponentPropsOptions = ComponentPropsOptions
+  PropsOptions extends ComponentPropsOptions = ComponentPropsOptions,
+  injectOptions extends Vue2InjectOptions = {}
 >(
   options: HasDefined<Props> extends true
     ? ComponentOptionsWithProps<
@@ -98,6 +104,7 @@ export function defineComponent<
         Mixin,
         Extends,
         Emits,
+        injectOptions,
         Props
       >
     : ComponentOptionsWithProps<
@@ -108,7 +115,8 @@ export function defineComponent<
         M,
         Mixin,
         Extends,
-        Emits
+        Emits,
+        injectOptions
       >
 ): VueProxy<PropsOptions, RawBindings, D, C, M, Mixin, Extends, Emits>
 

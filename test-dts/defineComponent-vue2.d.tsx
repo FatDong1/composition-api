@@ -52,3 +52,31 @@ describe('emits', () => {
   //  @ts-expect-error
   expectError(foo.value.$emit('blah'))
 })
+
+describe('inject', () => {
+  defineComponent({
+    inject: ['foo'],
+    created() {
+      expectType<unknown>(this.foo)
+    },
+  })
+  defineComponent({
+    inject: {
+      foo: 'foo',
+    },
+    created() {
+      expectType<unknown>(this.foo)
+    },
+  })
+  defineComponent({
+    inject: {
+      localFoo: {
+        from: 'foo',
+        default: 'foo',
+      },
+    },
+    created() {
+      expectType<unknown>(this.localFoo)
+    },
+  })
+})

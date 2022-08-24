@@ -3,6 +3,7 @@ import { EmitsOptions, SetupContext } from '../runtimeContext'
 import { Data } from './common'
 import { ComponentPropsOptions, ExtractPropTypes } from './componentProps'
 import { ComponentRenderProxy } from './componentProxy'
+import { ObjectFromList } from '../utils'
 export { ComponentPropsOptions } from './componentProps'
 
 export type ComputedGetter<T> = (ctx?: any) => T
@@ -61,6 +62,10 @@ export type ExtractComputedReturns<T extends any> = {
     : never
 }
 
+type ExtractInjectKey<T, V> = T extends string[]
+  ? ObjectFromList<T, V>
+  : Record<keyof T, V>
+
 export type ComponentOptionsWithProps<
   PropsOptions = ComponentPropsOptions,
   RawBindings = Data,
@@ -70,13 +75,16 @@ export type ComponentOptionsWithProps<
   Mixin = {},
   Extends = {},
   Emits extends EmitsOptions = {},
+  injectOptions = {},
   Props = ExtractPropTypes<PropsOptions>
 > = ComponentOptionsBase<Props, D, C, M> & {
   props?: PropsOptions
   emits?: Emits & ThisType<void>
   setup?: SetupFunction<Props, RawBindings, Emits>
+  inject?: injectOptions
 } & ThisType<
-    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits>
+    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits> &
+      ExtractInjectKey<injectOptions, unknown>
   >
 
 export type ComponentOptionsWithArrayProps<
@@ -88,13 +96,15 @@ export type ComponentOptionsWithArrayProps<
   Mixin = {},
   Extends = {},
   Emits extends EmitsOptions = {},
-  Props = Readonly<{ [key in PropNames]?: any }>
+  Props = Readonly<{ [key in PropNames]?: any }>,
+  injectOptions = {}
 > = ComponentOptionsBase<Props, D, C, M> & {
   props?: PropNames[]
   emits?: Emits & ThisType<void>
   setup?: SetupFunction<Props, RawBindings, Emits>
 } & ThisType<
-    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits>
+    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits> &
+      ExtractInjectKey<injectOptions, unknown>
   >
 
 export type ComponentOptionsWithoutProps<
@@ -105,13 +115,15 @@ export type ComponentOptionsWithoutProps<
   M extends MethodOptions = {},
   Mixin = {},
   Extends = {},
-  Emits extends EmitsOptions = {}
+  Emits extends EmitsOptions = {},
+  injectOptions = {}
 > = ComponentOptionsBase<Props, D, C, M> & {
   props?: undefined
   emits?: Emits & ThisType<void>
   setup?: SetupFunction<Props, RawBindings, Emits>
 } & ThisType<
-    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits>
+    ComponentRenderProxy<Props, RawBindings, D, C, M, Mixin, Extends, Emits> &
+      ExtractInjectKey<injectOptions, unknown>
   >
 
 export type WithLegacyAPI<T, D, C, M, Props> = T &
